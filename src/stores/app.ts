@@ -4,12 +4,12 @@ import { defineStore } from 'pinia'
 export const useAppStore = defineStore('app', () => {
   const tab = ref(1)
   const items = ref<CustomTabItem[]>([
-    { text: "One", value: 1, icon: "mdi-numeric-1-circle" },
-    { text: "Two", value: 2, icon: "mdi-numeric-2-circle" },
-    { text: "Three", value: 3, icon: "mdi-numeric-3-circle" },
     { text: "Four", value: 4, icon: "mdi-numeric-4-circle" },
     { text: "Five", value: 5, icon: "mdi-numeric-5-circle" },
     { text: "Six", value: 6, icon: "mdi-numeric-6-circle" },
+    { text: "One", value: 1, icon: "mdi-numeric-1-circle" },
+    { text: "Two", value: 2, icon: "mdi-numeric-2-circle" },
+    { text: "Three", value: 3, icon: "mdi-numeric-3-circle" },
     { text: "Seven", value: 7, icon: "mdi-numeric-7-circle" },
     { text: "Eight", value: 8, icon: "mdi-numeric-8-circle" },
     { text: "Nine", value: 9, icon: "mdi-numeric-9-circle" },

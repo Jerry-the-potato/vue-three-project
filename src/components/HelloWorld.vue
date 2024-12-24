@@ -11,28 +11,35 @@
       />
 
       <div class="text-center">
-        <div class="text-body-2 font-weight-light mb-n1">Welcome to</div>
+        <div class="text-body-2 font-weight-light mb-n1">
+          Welcome to
+        </div>
 
-        <h1 class="text-h2 font-weight-bold">Vuetify</h1>
+        <h1 class="text-h2 font-weight-bold">
+          Vuetify
+        </h1>
       </div>
 
       <div class="py-4" />
       <v-row>
         <v-col cols="12">
-          <v-card @click="()=>router.push({ name: '/views/MainView', params: { id: '123' }})"
+          <v-card
             class="py-4"
             color="surface-variant"
             image="https://cdn.vuetifyjs.com/docs/images/one/create/feature.png"
             prepend-icon="mdi-rocket-launch-outline"
             rounded="lg"
             variant="outlined"
+            @click="()=>router.push({ name: '/views/MainView', params: { id: '123' }})"
           >
             <template #image>
               <v-img position="top right" />
             </template>
 
             <template #title>
-              <h2 class="text-h5 font-weight-bold">Get started</h2>
+              <h2 class="text-h5 font-weight-bold">
+                Get started
+              </h2>
             </template>
 
             <template #subtitle>
@@ -98,12 +105,11 @@
             />
           </v-card>
         </v-col>
-
       </v-row>
         
       <v-row>
         <v-col cols="5">
-          <v-spacer></v-spacer>
+          <v-spacer />
         </v-col>
 
         <v-col cols="6">
@@ -133,7 +139,7 @@
         
       <v-row>
         <v-col cols="3">
-          <v-spacer></v-spacer>
+          <v-spacer />
         </v-col>
 
         <v-col cols="7">

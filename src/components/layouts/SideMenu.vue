@@ -1,47 +1,49 @@
 <template>
-  <v-navigation-drawer :width="261" :rail="rail" permanent>
+  <v-navigation-drawer
+    :width="261"
+    :rail="rail"
+    permanent
+  >
     <v-list-item 
       prepend-avatar="https://randomuser.me/api/portraits/women/72.jpg"
       title="Jerry 超級應用程式"
-    >
-    </v-list-item>
-    <v-divider></v-divider>
+    />
+    <v-divider />
     <v-list lines="two">
-
       <v-list-item
         v-for="item in items"
-        :prepend-icon="item.icon"
         :key="item.title"
+        :prepend-icon="item.icon"
         @click="router.push({
-          name: route.name,  // 保持當前路徑
-          params: { id: item.id },  // 更新新的 params
+          name: route.name, // 保持當前路徑
+          params: { id: item.id }, // 更新新的 params
         })"
       >
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
+        <v-list-item-title>{{ item.title }}</v-list-item-title>
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
   
   <v-app-bar app>
-    <v-app-bar-nav-icon @click.stop="rail = !rail"></v-app-bar-nav-icon>
+    <v-app-bar-nav-icon @click.stop="rail = !rail" />
     <v-toolbar-title>My App</v-toolbar-title>
-    <v-spacer></v-spacer>
+    <v-spacer />
 
     <v-btn icon>
-    <v-icon>mdi-magnify</v-icon>
+      <v-icon>mdi-magnify</v-icon>
     </v-btn>
 
     <v-btn icon>
-    <v-icon>mdi-heart</v-icon>
+      <v-icon>mdi-heart</v-icon>
     </v-btn>
 
     <v-btn icon>
-    <v-icon>mdi-dots-vertical</v-icon>
+      <v-icon>mdi-dots-vertical</v-icon>
     </v-btn>
   </v-app-bar>
 </template>
   
-<script lagn="ts" setup>
+<script lang="ts" setup>
 import router from '@/router';
 import { useRoute } from 'vue-router'
 const route = useRoute()
