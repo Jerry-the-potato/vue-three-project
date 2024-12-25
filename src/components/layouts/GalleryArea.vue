@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>固定的 ItemView</h1>
     <keep-alive>
       <component
         :is="currentLayout"

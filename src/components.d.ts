@@ -16,6 +16,7 @@ declare module 'vue' {
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Scene: typeof import('./components/gallerys/WebglPrinter/Scene.vue')['default']
     SideMenu: typeof import('./components/layouts/SideMenu.vue')['default']
     SortAlgorithm: typeof import('./components/gallerys/SortAlgorithm/index.vue')['default']
     WebglPrinter: typeof import('./components/gallerys/WebglPrinter/index.vue')['default']
