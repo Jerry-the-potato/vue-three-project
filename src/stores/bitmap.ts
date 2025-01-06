@@ -23,7 +23,7 @@ export const useBitmapDatas = defineStore('bitmap', () => {
   }
   const getPosition = (i : number, order : string = 'XYZ') => {
     const x = i % width.value;
-    const y = -Math.floor(i / height.value);
+    const y = Math.floor(i / height.value);
     const z = -boxes.value[i]/2;
     if(Number.isNaN(z) && isWarn == false){
       isWarn = true

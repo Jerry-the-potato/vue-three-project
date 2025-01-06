@@ -1,8 +1,5 @@
 <template>
-  <div
-    ref="div"
-    class="absolute w-full h-full"
-  />
+  <div ref="div" class="w-full h-full" />
 </template>
 
 <script lang="ts" setup>
@@ -15,6 +12,7 @@ import { onActivated, onDeactivated } from "vue"
 
 import * as THREE from "three"
 import CameraControls from "camera-controls"
+import { CameraViewType } from "@/types/CameraViewType"
 CameraControls.install({ THREE: THREE })
 
 /* 可以用來傳入的 props */
@@ -25,11 +23,19 @@ const props = defineProps({
   },
   position: {
     type: Array<number>,
-    default: [50, 50, 50]
+    default: [50, 50, 50],
   },
   target: {
     type: Array<number>,
-    default: [50, 50, 0]
+    default: [50, 50, 0],
+  },
+  view: {
+    type: Number,
+    default: CameraViewType.Default,
+    validator(value: number) {
+      // 確保值符合列舉中的值
+      return Object.values(CameraViewType).includes(value)
+    },
   },
 })
 
@@ -59,7 +65,7 @@ Object.assign(controls, controlProps)
 const axis = new THREE.AxesHelper(300)
 scene.add(axis)
 scene.add(group.value)
-addResize(renderer, camera)
+addResize(renderer, camera, div)
 
 const material = getShaderMaterial(props.order)
 
@@ -83,10 +89,21 @@ scene.add(instancedMesh)
 
 const transform = (order: string, position: Array<number>): THREE.Vector3 => {
   const [x, y, z] = position
-  if(order == 'XZY') return new THREE.Vector3(x, Number.isNaN(z) ? 0 : 0, y)
-  if(order == 'XYZ') return new THREE.Vector3(x, -y, Number.isNaN(z) ? 0 : 0)
+  if (order == "XZY") return new THREE.Vector3(x, Number.isNaN(z) ? 0 : 0, y)
+  if (order == "XYZ") return new THREE.Vector3(x, -y, Number.isNaN(z) ? 0 : 0)
   return new THREE.Vector3(0, 0, 0)
 }
+
+const getTransform = (
+  x: number,
+  y: number,
+  z: number
+): [number, number, number] => {
+  if (props.order == "XYZ") return [x, y, z]
+  if (props.order == "XZY") return [x, z, y]
+  return [0, 0, 0]
+}
+
 bitmapData.onImageLoaded(() => {
   // 創建一個臨時的變換矩陣
   const matrix = new THREE.Matrix4()
@@ -101,7 +118,6 @@ bitmapData.onImageLoaded(() => {
   // 更新 InstancedMesh 來應用變更
   instancedMesh.instanceMatrix.needsUpdate = true
   instancedMesh.count = count
-  console.log(instancedMesh.count)
 
   // geometry.instanceCount = width * height
   //   geometry.setAttribute('offset', new THREE.Float32BufferAttribute(positions.value, 3))
@@ -109,14 +125,27 @@ bitmapData.onImageLoaded(() => {
   //   geometry.setAttribute('alpha', new THREE.InstancedBufferAttribute(alphas.value, 1))
   //   geometry.setAttribute('height', new THREE.InstancedBufferAttribute(boxes.value, 1))
 
-  if(props.order == "XYZ"){
-    controls.setPosition(width.value / 2, -height.value / 2, 50)
-    controls.setTarget(width.value / 2, -height.value / 2, 0)
+  //Default
+  let pos = getTransform(...props.position as [number, number, number])
+  let tar = getTransform(...props.target as [number, number, number])
+  const x = width.value / 2;
+  const y = -height.value / 2;
+  const z = 50;
+  if(props.view == CameraViewType.FrontView){
+    pos = getTransform(x, y, z);
+    tar = getTransform(x, y, 0);
+  }else if(props.view == CameraViewType.BackView){
+    pos = getTransform(x, y, -z);
+    tar = getTransform(x, y, 0);
+  }else if(props.view == CameraViewType.SideView){
+    pos = getTransform(x * 1.5, -y * 1.5, z);
+    tar = getTransform(x, -y, 0);
+  }else if(props.view == CameraViewType.FrontView){
+
   }
-  else if(props.order == "XZY"){
-    controls.setPosition(width.value / 2, 50, -height.value / 2)
-    controls.setTarget(width.value / 2, 0, -height.value / 2)
-  }
+  controls.setPosition(...pos)
+  controls.setTarget(...tar)
+
 })
 watchEffect(() => {
   if (positions.value) {
@@ -124,8 +153,6 @@ watchEffect(() => {
       "offset",
       new THREE.Float32BufferAttribute(positions.value, 3)
     )
-
-    console.log(positions.value)
   } // offset 是因為要改變 XYZ 軸向，請查看 shader
   if (colors.value) {
     geometry.setAttribute(
@@ -146,13 +173,6 @@ watchEffect(() => {
     )
   }
 })
-
-// 渲染循環
-// function animate() {
-//     requestAnimationFrame(animate);
-//     renderer.render(scene, camera);
-// }
-// animate();
 
 const frame = ref(0)
 const render = () => {
@@ -176,8 +196,10 @@ const cleanup = () => {}
 onMounted(() => {
   if (div.value) {
     div.value.appendChild(renderer.domElement)
-    renderer.domElement.width = div.value.clientWidth
-    renderer.domElement.height = div.value.clientHeight
+    // renderer.domElement.width = div.value.clientWidth
+    // renderer.domElement.height = div.value.clientHeight
+    // renderer.domElement.style.width = div.value.clientWidth + "px"
+    // renderer.domElement.style.height = div.value.clientHeight + "px"
   }
   frame.value = requestAnimationFrame(render)
 })
@@ -188,13 +210,4 @@ onBeforeUnmount(() => {
 })
 </script>
 
-<style scoped>
-.full {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-</style>
+<style scoped></style>
