@@ -1,34 +1,38 @@
 
 import * as THREE from 'three'
 
+const gap = "0.0"
+const margin = `1.0 - ${gap} * 2.0`
+const borderWidth = `borderWidth + ${gap}`
+
 // 定義 GLSL 著色器
 const vertexShader : {[key: string]: string} = {
     renderByXYZ: `
         transformed = position;
-        transformed.x *= 0.8;
-        transformed.y *= 0.8;
+        transformed.x *= ${margin};
+        transformed.y *= ${margin};
         transformed.z *= height;  // 按照高度屬性縮放
         // transformed.x += offset.y;
         // transformed.y += offset.x;
-        // transformed.z += offset.z;`,
+        transformed.z += offset.z;`,
     renderByXZY: `
         transformed = position;
-        transformed.x *= 0.8;
-        transformed.z *= 0.8;
+        transformed.x *= ${margin};
+        transformed.z *= ${margin};
         transformed.y *= height;  // 按照高度屬性縮放
         // transformed.x += offset.x;
         // transformed.z += offset.z; // y 輸入 z
-        // transformed.y += -offset.y; // z 輸入 y，負值：反轉鏡像世界`
+        // transformed.y -= offset.y; // z 輸入 y，負值：反轉鏡像世界`
 }
 
 const fragmentShader : {[key: string]: string} = {
     renderByXYZ: `
-        float edgeConditionX = step(abs(fract(transformed.x) - 0.5), borderWidth + 0.1); // 在頂點著色器變小 0.8
-        float edgeConditionY = step(abs(fract(transformed.y) - 0.5), borderWidth + 0.1);
+        float edgeConditionX = step(abs(fract(transformed.x) - 0.5), ${borderWidth});
+        float edgeConditionY = step(abs(fract(transformed.y) - 0.5), ${borderWidth});
         float edgeConditionZ = step(abs(transformed.z), borderWidth / 2.0) + 1.0 - step(abs(transformed.z), vHeight / 2.0 - borderWidth);`,
     renderByXZY: `
-        float edgeConditionX = step(abs(fract(transformed.x) - 0.5), borderWidth + 0.1);
-        float edgeConditionZ = step(abs(fract(transformed.z) - 0.5), borderWidth + 0.1);
+        float edgeConditionX = step(abs(fract(transformed.x) - 0.5), ${borderWidth});
+        float edgeConditionZ = step(abs(fract(transformed.z) - 0.5), ${borderWidth});
         float edgeConditionY = step(abs(transformed.y), borderWidth) + 1.0 - step(abs(transformed.y), vHeight - borderWidth);`
 }
 export default function getShaderMaterial(order: string = 'XYZ'){

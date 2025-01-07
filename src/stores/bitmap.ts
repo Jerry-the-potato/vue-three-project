@@ -4,13 +4,27 @@ import productImage from '@/assets/產品.jpg';
 
 export const useBitmapDatas = defineStore('bitmap', () => {
 
-  const maxPixel = ref(64)
-  const width = ref(50)
-  const height = ref(50)
-  const boxes = ref(new Float32Array())
-  const colors = ref(new Float32Array())
-  const alphas = ref(new Float32Array())
-  const positions = ref(new Float32Array())
+  let lastUrl = ""
+  const bitmap = reactive(
+    {
+      maxPixel: 64,
+      width: 50,
+      height: 50,
+      boxes: new Float32Array(),
+      colors: new Float32Array(),
+      alphas: new Float32Array(),
+      positions: new Float32Array(),
+    }
+  )
+  
+  const { maxPixel, width, height, boxes, colors, alphas, positions } = toRefs(bitmap);
+  // const maxPixel = ref(64)
+  // const width = ref(50)
+  // const height = ref(50)
+  // const boxes = ref(new Float32Array())
+  // const colors = ref(new Float32Array())
+  // const alphas = ref(new Float32Array())
+  // const positions = ref(new Float32Array())
   const reRender = () => {
     // 原本是 React 要用 setRenderCount
     // 自行判斷是否要手動觸發渲染
@@ -23,7 +37,7 @@ export const useBitmapDatas = defineStore('bitmap', () => {
   }
   const getPosition = (i : number, order : string = 'XYZ') => {
     const x = i % width.value;
-    const y = Math.floor(i / height.value);
+    const y = Math.floor(i / width.value);
     const z = -boxes.value[i]/2;
     if(Number.isNaN(z) && isWarn == false){
       isWarn = true
@@ -40,6 +54,8 @@ export const useBitmapDatas = defineStore('bitmap', () => {
 
   // 讀取圖片的點陣圖
   const loadImage = (url = productImage) => {
+    if(lastUrl == url) return
+    lastUrl = url
     const image = new Image();
     // 載入圖片，並在圖片加載完成後處理
     image.onload = () => {
@@ -112,13 +128,7 @@ export const useBitmapDatas = defineStore('bitmap', () => {
   }
 
   return {
-    maxPixel,
-    width,
-    height,
-    boxes,
-    colors,
-    alphas,
-    positions,
+    bitmap,
     getPosition,
     loadImage,
     onImageLoaded,

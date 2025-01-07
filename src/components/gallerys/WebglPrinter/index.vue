@@ -8,7 +8,7 @@
         <Scene order="XYZ" :view="CameraViewType.BackView"/>
       </v-col>
       <v-col cols="4 scene gallery">
-        <Scene order="XZY" :view="CameraViewType.SideView"/>
+        <Scene order="XZY" :view="CameraViewType.SideView" :url="landscapeImg"/>
       </v-col>
     </v-row>
   </v-container>
@@ -16,6 +16,7 @@
 
 <script lang="ts" setup>
 import { CameraViewType } from "@/types/CameraViewType"
+import landscapeImg from '@/assets/A breathtaking landscape.webp'
 </script>
 
 <style lang="css">

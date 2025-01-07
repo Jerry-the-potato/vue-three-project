@@ -4,7 +4,6 @@
 
 <script lang="ts" setup>
 import { useBitmapDatas } from "@/stores/bitmap"
-import addResize from "@/composables/addResize"
 import getShaderMaterial from "@/composables/shader"
 
 import { onMounted, onBeforeUnmount, ref, toRefs, watchEffect } from "vue"
@@ -13,6 +12,7 @@ import { onActivated, onDeactivated } from "vue"
 import * as THREE from "three"
 import CameraControls from "camera-controls"
 import { CameraViewType } from "@/types/CameraViewType"
+import { useContainerSize } from "@/composables/useContainerSize"
 CameraControls.install({ THREE: THREE })
 
 /* 可以用來傳入的 props */
@@ -37,6 +37,10 @@ const props = defineProps({
       return Object.values(CameraViewType).includes(value)
     },
   },
+  url: {
+    type: String,
+    default: undefined,
+  }
 })
 
 const div = ref<HTMLElement | null>(null)
@@ -65,15 +69,14 @@ Object.assign(controls, controlProps)
 const axis = new THREE.AxesHelper(300)
 scene.add(axis)
 scene.add(group.value)
-addResize(renderer, camera, div)
+const isUpdate = ref(false)
 
 const material = getShaderMaterial(props.order)
 
 // 利用 pinia store 共享狀態
 const bitmapData = useBitmapDatas()
-bitmapData.loadImage()
-const { maxPixel, width, height, boxes, positions, colors, alphas } =
-  toRefs(bitmapData)
+bitmapData.loadImage(props.url)
+const { maxPixel, width, height, boxes, positions, colors, alphas } = toRefs(bitmapData.bitmap)
 
 // const geometry = new THREE.InstancedBufferGeometry()
 
@@ -107,20 +110,23 @@ const getTransform = (
 bitmapData.onImageLoaded(() => {
   // 創建一個臨時的變換矩陣
   const matrix = new THREE.Matrix4()
-
   // 設置每個實例的位置
   const count = width.value * height.value
   for (let i = 0; i < count; i++) {
     const position = transform(props.order, bitmapData.getPosition(i))
     matrix.setPosition(position)
     instancedMesh.setMatrixAt(i, matrix)
+
+    instancedMesh.frustumCulled = false;
+
+
   }
   // 更新 InstancedMesh 來應用變更
   instancedMesh.instanceMatrix.needsUpdate = true
   instancedMesh.count = count
 
   // geometry.instanceCount = width * height
-  //   geometry.setAttribute('offset', new THREE.Float32BufferAttribute(positions.value, 3))
+  //   geometry.setAttribute('offset', new THREE.InstancedBufferAttribute(positions.value, 3))
   //   geometry.setAttribute('color', new THREE.InstancedBufferAttribute(colors.value, 3))
   //   geometry.setAttribute('alpha', new THREE.InstancedBufferAttribute(alphas.value, 1))
   //   geometry.setAttribute('height', new THREE.InstancedBufferAttribute(boxes.value, 1))
@@ -145,13 +151,12 @@ bitmapData.onImageLoaded(() => {
   }
   controls.setPosition(...pos)
   controls.setTarget(...tar)
-
 })
 watchEffect(() => {
   if (positions.value) {
     geometry.setAttribute(
       "offset",
-      new THREE.Float32BufferAttribute(positions.value, 3)
+      new THREE.InstancedBufferAttribute(positions.value, 3)
     )
   } // offset 是因為要改變 XYZ 軸向，請查看 shader
   if (colors.value) {
@@ -174,13 +179,26 @@ watchEffect(() => {
   }
 })
 
+const [offsetWidth, offsetHeight] = useContainerSize(div)
+watch([offsetWidth, offsetHeight], () => {
+    isUpdate.value = true
+})
 const frame = ref(0)
 const render = () => {
   const delta = clock.getDelta()
   const hasControlsUpdated = controls.update(delta)
   frame.value = requestAnimationFrame(render)
+  
+  if(isUpdate.value){
+    const w = offsetWidth.value
+    const h = offsetHeight.value
+    renderer.setSize(w, h)
+    camera.aspect = w/h
+    camera.updateProjectionMatrix()
+  }
+  if (hasControlsUpdated || isUpdate.value) renderer.render(scene, camera)
+  isUpdate.value = false;
 
-  if (hasControlsUpdated) renderer.render(scene, camera)
 }
 onActivated(() => {
   frame.value = requestAnimationFrame(render)

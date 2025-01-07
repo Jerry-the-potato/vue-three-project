@@ -10,14 +10,31 @@ export function useContainerSize(containerRef : Ref<HTMLElement | null>, margin 
     height.value = containerRef.value?.offsetHeight ?? height.value - margin * 2
   };
 
-  updateSize()
+  // updateSize()
+// 使用 ResizeObserver 來監聽元素尺寸變化
+let resizeObserver: ResizeObserver | null = null;
+
+  // onMounted(() => {
+  //   containerRef.value?.addEventListener('resize', updateSize)
+  // });
+
+  // onBeforeUnmount(() => {
+  //   containerRef.value?.removeEventListener('resize', updateSize)
+  // });
 
   onMounted(() => {
-    containerRef.value?.addEventListener('resize', updateSize)
+    if (containerRef.value) {
+      resizeObserver = new ResizeObserver(() => {
+        updateSize();
+      });
+      resizeObserver.observe(containerRef.value);
+    }
   });
 
   onBeforeUnmount(() => {
-    containerRef.value?.removeEventListener('resize', updateSize)
+    if (resizeObserver && containerRef.value) {
+      resizeObserver.disconnect();
+    }
   });
 
   // Watch for margin changes and update the size accordingly
