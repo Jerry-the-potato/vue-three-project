@@ -572,6 +572,10 @@ video {
   margin-bottom: 1rem;
 }
 
+.h-1\/2 {
+  height: 50%;
+}
+
 .h-full {
   height: 100%;
 }
