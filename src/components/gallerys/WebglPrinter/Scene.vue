@@ -3,11 +3,10 @@
 </template>
 
 <script lang="ts" setup>
-import { useBitmapDatas } from "@/stores/bitmap"
-import getShaderMaterial from "@/composables/shader"
+import { useBitmapDatas } from "@/store/bitmap"
 import defaultUrl from '@/assets/產品.jpg';
 
-import { onMounted, onBeforeUnmount, ref, toRefs, watchEffect } from "vue"
+import { onMounted, onBeforeUnmount, ref, toRefs } from "vue"
 import { onActivated, onDeactivated } from "vue"
 
 import * as THREE from "three"

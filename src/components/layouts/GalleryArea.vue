@@ -4,6 +4,7 @@
       <component
         :is="currentLayout"
         v-if="isActive"
+        :key="params.id"
       />
     </keep-alive>
   </div>
@@ -14,6 +15,7 @@ import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { defineAsyncComponent } from 'vue'
 const route = useRoute()
+const params = route.params as RouteParams
 const isActive = ref(true)
 
 // 動態加載 layout
@@ -26,6 +28,6 @@ const layouts :{ [key: string]: ReturnType<typeof defineAsyncComponent> } = {
 type RouteParams = {
     id: string;
 };
-const currentLayout = computed(() => layouts[(route.params as RouteParams).id]|| layouts.default)
+const currentLayout = computed(() => layouts[params.id]|| layouts.default)
 
 </script>

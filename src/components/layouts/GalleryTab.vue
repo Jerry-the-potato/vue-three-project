@@ -40,7 +40,7 @@
 <script lang="ts" setup>
 import { VTabsWindow } from "vuetify/components/VTabs";
 import { useDraggable, type SortableEvent } from "vue-draggable-plus";
-import { useAppStore } from "@/stores/app";
+import { useAppStore } from "@/store/app";
 import { storeToRefs } from "pinia";
 
 const store = useAppStore();

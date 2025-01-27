@@ -2,11 +2,11 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import productImage from '@/assets/產品.jpg';
 import * as THREE from "three"
-import getShaderMaterial from "@/composables/shader"
+import getShaderMaterial from "@/utils/shader"
 
 // 定義 Bitmap 的型別
 interface Bitmap {
-  id: Symbol;
+  id: symbol;
   scene: THREE.Scene;
   maxPixel: number;
   width: number;
@@ -15,7 +15,7 @@ interface Bitmap {
   colors: Float32Array;
   alphas: Float32Array;
   positions: Float32Array;
-  isWarn: Boolean;
+  isWarn: boolean;
   eventHandlers: (() => void)[];
   onImageLoaded: (handler: () => void) => void;
   loadImage: (url: string) => void;
@@ -35,7 +35,7 @@ const getPosition = (bitmap: Bitmap, i : number, order : string = 'XYZ') => {
   return [0, 0, 0]
 }
 // 定義模板
-const createBitmapTemplate = (uniqueId: Symbol) => {
+const createBitmapTemplate = (uniqueId: symbol) => {
   const bitmap: Bitmap = reactive({
     id: uniqueId,
     scene: shallowReactive(new THREE.Scene()),
@@ -62,6 +62,7 @@ const createBitmapTemplate = (uniqueId: Symbol) => {
   
       // 載入圖片，並在圖片加載完成後處理
   bitmap.image.onload = () => {
+    
     // 創建 canvas 和 2D 上下文
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -134,7 +135,7 @@ export const useBitmapDatas = defineStore('bitmap', () => {
   const bitmaps: Bitmap[] = ([]);
 
   // 新增功能
-  function getOrCreateBitmap(uniqueId: Symbol, order: string = "XYZ") {
+  function getOrCreateBitmap(uniqueId: symbol, order: string = "XYZ") {
     const existingBitmap = bitmaps.find(bitmap => bitmap.id == uniqueId);
     if(existingBitmap) return existingBitmap;
 

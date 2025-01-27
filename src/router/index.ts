@@ -1,17 +1,10 @@
-/**
- * router/index.ts
- *
- * Automatic routes for `./src/pages/*.vue`
- */
-
-// Composables
-import { createRouter, createWebHistory } from 'vue-router/auto'
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router/auto'
 import { setupLayouts } from 'virtual:generated-layouts'
 import { routes } from 'vue-router/auto-routes'
 
 // 找到所有子路徑並加入參數需求 :id
-function findChildren(routes: any){
-  routes.children = routes.children.map((route: any) => {
+function findChildren(routes: RouteRecordRaw){
+  routes.children = routes.children?.map((route) => {
     if(route.children == undefined) return {
       ...route,
       path: `${route.path}:id`,  // 加 :id，限制頁面
@@ -28,7 +21,12 @@ const customRoutes = routes.map((route) => {
   } else {
     return route
   }
-})
+}).concat([
+  {
+    path: '/:catchAll(.*)',
+    redirect: '/',
+  }
+])
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
