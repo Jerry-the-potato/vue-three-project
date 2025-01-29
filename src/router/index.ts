@@ -7,7 +7,7 @@ function findChildren(routes: RouteRecordRaw){
   routes.children = routes.children?.map((route) => {
     if(route.children == undefined) return {
       ...route,
-      path: `${route.path}:id`,  // 加 :id，限制頁面
+      path: `${route.path}/:id/:url`,  // 加 :id，限制頁面
     }
     findChildren(route)
     return route

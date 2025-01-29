@@ -5,6 +5,7 @@
       color="white"
       height="60"
       slider-color="#f78166"
+      :update="updateTab()"
     >
       <v-tab
         v-for="item in items"
@@ -40,12 +41,20 @@
 <script lang="ts" setup>
 import { VTabsWindow } from "vuetify/components/VTabs";
 import { useDraggable, type SortableEvent } from "vue-draggable-plus";
-import { useAppStore } from "@/store/app";
+import { useWorkStore } from "@/store/workStore";
 import { storeToRefs } from "pinia";
+import useRouter from "@/utils/routerUtils"
 
-const store = useAppStore();
-const { items, tab } = storeToRefs(store);
-const { addTab } = store;
+const workStore = useWorkStore()
+const router = useRouter()
+const { items, tab } = storeToRefs(workStore)
+const { addTab } = workStore;
+
+const updateTab = async () => {
+  const item = workStore.items.find((item) => item.value == workStore.tab)
+  if(item == undefined) return
+  await router.setRouter(item.id, item.url, item.value)
+}
 
 const slideGroupContentRef = ref<HTMLElement | null>();
 const slideGroupContent = ref<HTMLElement | null>();

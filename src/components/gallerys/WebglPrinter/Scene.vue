@@ -133,10 +133,12 @@ const render = () => {
 
 }
 onActivated(() => {
+  console.log("activated")
   frame.value = requestAnimationFrame(render)
 })
 
 onDeactivated(() => {
+  console.log("Deactivated")
   cancelAnimationFrame(frame.value)
 })
 
@@ -156,6 +158,7 @@ onMounted(() => {
 
 // 組件卸載前清理
 onBeforeUnmount(() => {
+  console.log("not me")
   cleanup()
 })
 </script>

@@ -30,7 +30,7 @@
             prepend-icon="mdi-rocket-launch-outline"
             rounded="lg"
             variant="outlined"
-            @click="()=>router.push({ name: '/views/MainView', params: { id: '123' }})"
+            @click="()=>router.setRouter('WebglPrinter', 'index', 1)"
           >
             <template #image>
               <v-img position="top right" />
@@ -171,8 +171,8 @@
 </template>
 
 <script setup lang="ts">
-  //
-
-  import router from '@/router';
+  // import router from '@/router';
+import useRouter from "@/utils/routerUtils"
+const router = useRouter()
   
 </script>
