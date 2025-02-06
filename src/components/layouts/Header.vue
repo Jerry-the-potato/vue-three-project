@@ -4,17 +4,22 @@
     <v-toolbar-title>My App</v-toolbar-title>
     <v-spacer />
 
-    <v-btn icon>
-      <v-icon>mdi-magnify</v-icon>
-    </v-btn>
-
-    <v-btn icon>
-      <v-icon>mdi-heart</v-icon>
-    </v-btn>
-
-    <v-btn icon>
-      <v-icon>mdi-dots-vertical</v-icon>
-    </v-btn>
+    <v-tooltip 
+      top 
+      content-class="w-96"
+    >
+      <template #activator="{ props }">
+        
+        <v-btn
+          icon 
+          v-bind="props"
+        >
+          <v-icon>mdi-delete</v-icon>
+        </v-btn>
+      </template>
+      <span>確定刪除分頁？</span>
+    </v-tooltip>
+    
   </v-app-bar>
 </template>
   

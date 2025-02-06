@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useBitmapDatas } from "@/store/bitmap"
+import { useBitmapDatas } from "@/stores/bitmap"
 import defaultUrl from '@/assets/產品.jpg';
 
 import { onMounted, onBeforeUnmount, ref, toRefs } from "vue"

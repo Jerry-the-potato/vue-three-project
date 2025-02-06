@@ -1,6 +1,7 @@
 <template>
-  <div ref="vtab">
+  <div ref="vtab" id="vtab">
     <v-tabs
+      show-arrows
       v-model="tab"
       color="white"
       height="60"
@@ -17,7 +18,6 @@
       />
     </v-tabs>
   </div>
-
   <v-tabs-window
     v-model="tab"
     direction="vertical"
@@ -41,7 +41,7 @@
 <script lang="ts" setup>
 import { VTabsWindow } from "vuetify/components/VTabs";
 import { useDraggable, type SortableEvent } from "vue-draggable-plus";
-import { useWorkStore } from "@/store/workStore";
+import { useWorkStore } from "@/stores/workStore";
 import { storeToRefs } from "pinia";
 import useRouter from "@/utils/routerUtils"
 
@@ -60,13 +60,11 @@ const slideGroupContentRef = ref<HTMLElement | null>();
 const slideGroupContent = ref<HTMLElement | null>();
 
 onMounted(() => {
-  slideGroupContentRef.value = vtab.value.querySelector(
-    ".v-slide-group__container"
-  );
+  slideGroupContentRef.value = vtab.value.querySelector(".v-slide-group__container");
   slideGroupContent.value = vtab.value.querySelector(".v-slide-group__content");
 });
 
-const useKey = ref(false); // 暫時不使用 key 因為會干擾分頁動畫
+const useKey = ref(true); // 暫時不使用 key 因為會干擾分頁動畫
 
 const draggedButton = ref<HTMLButtonElement | null>();
 const islastDragged = ref(false)
@@ -76,10 +74,14 @@ const vtab = ref()
 const draggable = ref()
 draggable.value = useDraggable(slideGroupContent, items, {
   animation: 250,
+  onChoose(event: SortableEvent) {
+    tab.value = Number((event.item as HTMLButtonElement).value)
+    console.log("choose", tab.value)
+    isUpdate.value = false
+  },
   onStart(event: SortableEvent) {
     draggedButton.value = event.item as HTMLButtonElement
     console.log("start", draggedButton.value);
-    isUpdate.value = false
     islastDragged.value = true
   },
   onEnd() {
@@ -94,6 +96,8 @@ draggable.value = useDraggable(slideGroupContent, items, {
   chosenClass: 'tab-chosen',
   easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
 });
+
+const show = ref(false)
 </script>
 
 <style scoped>
@@ -131,4 +135,5 @@ draggable.value = useDraggable(slideGroupContent, items, {
     opacity: 0;
   }
 }
+
 </style>

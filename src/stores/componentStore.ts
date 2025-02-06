@@ -1,5 +1,11 @@
 import { defineStore } from 'pinia';
 import { defineAsyncComponent } from 'vue';
+// 路徑範例
+// const layouts :{ [key: string]: ReturnType<typeof defineAsyncComponent> } = {
+//     '123': defineAsyncComponent(() => import('@/components/gallerys/WebglPrinter/index.vue')),
+//     '456': defineAsyncComponent(() => import('@/components/gallerys/SortAlgorithm/index.vue')),
+//     default: defineAsyncComponent(() => import('@/components/gallerys/DefaultLayout/index.vue')),
+// }
 
 // 動態加載 layout
 const layouts = import.meta.glob('@/components/gallerys/*/*.vue');
@@ -16,9 +22,10 @@ export const useComponentStore = defineStore('componentStore', {
       }
 
       const loader = layouts[path] as (() => Promise<any>) | undefined;
-      this.componentCache[key] = defineAsyncComponent(
+      const component = defineAsyncComponent(
         loader || layouts['/src/components/gallerys/WebglPrinter/index.vue'] as () => Promise<any>
       );
+      this.componentCache[key] = markRaw(component)
       return this.componentCache[key];
     },
 

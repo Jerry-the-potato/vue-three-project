@@ -29,6 +29,19 @@
     <v-toolbar-title>My App</v-toolbar-title>
     <v-spacer />
 
+    <v-tooltip location="bottom" content-class="custom-tooltip" attach="#app" >
+      <template #activator="{ props }">
+        
+        <v-btn
+          icon 
+          v-bind="props"
+        >
+          <v-icon>mdi-delete</v-icon>
+        </v-btn>
+      </template>
+      <span >確定刪除分頁？</span>
+    </v-tooltip>
+
     <v-btn icon>
       <v-icon>mdi-magnify</v-icon>
     </v-btn>
@@ -59,4 +72,12 @@ const items = [
 const rail = ref(true);
 
 </script>
-  
+
+<style scoped>
+.custom-tooltip {
+  background-color: #f78166;  /* 設定背景顏色 */
+  color: white;               /* 設定文字顏色 */
+  padding: 8px;               /* 設定內邊距 */
+  border-radius: 4px;         /* 設定圓角 */
+}
+</style>

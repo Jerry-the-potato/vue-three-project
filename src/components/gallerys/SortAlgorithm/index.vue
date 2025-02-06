@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { onMounted, ref, reactive, type PropType } from "vue"
 import { type MotionPath } from "@/composables/useMotionPath"
-import ParticleSystem from './particleSystem.js';
-import Averager from "./averager";
+import ParticleSystem from '@/composables/particleSystem';
+import useAverager from "@/composables/averager";
 import { useMotionPathConfig } from '@/store/MotionPathConfig.js';
 const props = defineProps({
   mouseMotion: {
@@ -28,7 +28,7 @@ interface ParticleSystemState {
   columns: number;
 }
 
-const frame = new Averager(60);
+const frame = useAverager(60);
 
 // 設置為響應式狀態
 const system = reactive<ParticleSystemState>({
@@ -41,7 +41,7 @@ const timer = ref<number>(0); // 用於將來的時間管理或控制
 
 // 設定畫布
 const setCanvas = (canvas: HTMLCanvasElement, log: HTMLDivElement): void => {
-  system.sort.log = log;
+  // system.sort.log = log;
   system.ctx = canvas.getContext("2d");
   if (system.ctx) {
     system.ctx.lineCap = 'butt';

@@ -1,6 +1,6 @@
 import { ref, reactive } from 'vue';
-import ParticleSystem from './particleSystem.js';
-import Averager from "./averager";
+import ParticleSystem from './particleSystem';
+import Averager from "./averager.js";
 import { useMotionPathConfig } from '@/store/MotionPathConfig.js';
 const config = useMotionPathConfig()
 
