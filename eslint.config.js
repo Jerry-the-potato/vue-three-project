@@ -33,5 +33,19 @@ export default [
       'vue/multi-word-component-names': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
     }
-  }
+  },
+  {
+    extends: [
+      'plugin:prettier/recommended', // 引入 Prettier 的推薦配置
+      'eslint:recommended',
+      'plugin:vue/vue3-recommended',
+      'plugin:@typescript-eslint/recommended',
+      '@vue/eslint-config-typescript', // Vue + TypeScript ESLint 配置
+      'prettier' // 禁用 Prettier 衝突的規則
+    ],
+    plugins: ['prettier'],
+    rules: {
+      'prettier/prettier': ['error'],
+    },
+  },
 ]
