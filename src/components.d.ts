@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppFooter: typeof import('./components/AppFooter.vue')['default']
+    Box: typeof import('./components/layouts/Box.vue')['default']
     DefaultLayout: typeof import('./components/gallerys/DefaultLayout/index.vue')['default']
     Edit: typeof import('./components/gallerys/WebglPrinter/edit.vue')['default']
     GalleryArea: typeof import('./components/layouts/GalleryArea.vue')['default']
